@@ -45,13 +45,10 @@ class SceneList(list):
 
     def append(self, value):
         assert isinstance(value, Scene)
-
-    def append(self, value):
-        assert isinstance(value, Scene)
         super(SceneList, self).append(value)
         value.build_index = self.index(value)
 
     def remove(self, value):
         super(SceneList, self).remove(value)
-        for scene in self[value.build_index :]:
+        for scene in self[value.build_index:]:
             scene.build_index -= 1
