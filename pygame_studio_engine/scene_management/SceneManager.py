@@ -5,7 +5,7 @@ from pygame_studio_engine.scene_management.scene_list import SceneList
 
 from typing import TYPE_CHECKING, Optional, Union
 if TYPE_CHECKING:
-    from pygame_studio_engine.scene import Scene
+    from pygame_studio_engine.scene_management.scene import Scene
 
 
 scenes: SceneList[Scene] = SceneList()

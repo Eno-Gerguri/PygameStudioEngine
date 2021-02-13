@@ -1,10 +1,8 @@
-from pygame_studio_engine.scene import Scene
-
-from typing import Any
+from pygame_studio_engine.scene_management..scene import Scene
 
 
 class SceneList(list):
-    def __init__(self, *args: tuple[Any, ...]):
+    def __init__(self, *args: tuple[Scene, ...]):
         if args:
             assert all(isinstance(i, Scene) for i in args)
             assert any(
@@ -106,6 +104,13 @@ class SceneList(list):
 
     @property
     def active_scene(self) -> Scene:
+        """
+        Returns the currently active scene.
+
+        :getter: Currently active scene
+        :setter: The new active scene to load
+        :type: Scene
+        """
         return self._active_scene
 
     @active_scene.setter
