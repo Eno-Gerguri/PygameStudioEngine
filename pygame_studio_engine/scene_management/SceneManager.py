@@ -102,39 +102,3 @@ def load_scene(scene_information: Union[str, int]) -> Optional[Scene]:
         return load_scene_by_build_index(build_index=scene_information)
     else:
         return None
-
-
-def active_scene_changed() -> None:
-    """
-    Calls all active_scene_changed methods in all game_objects that have them
-    in the active_scene.
-
-    :return: None
-    :rtype: None
-    """
-    for game_object in scenes.active_scene.game_obejcts:
-        game_object.broadcast_message(method_name="active_scene_changed")
-
-
-def scene_loaded() -> None:
-    """
-    Calls all scene_loaded methods in all game_obejcts that have them in the
-    active_scene.
-
-    :return: None
-    :rtype: None
-    """
-    for game_object in scenes.active_scene.game_obejcts:
-            game_object.broadcast_message(method_name="scene_loaded")
-
-
-def scene_unloaded() -> None:
-    """
-    Calls all scene_unloaded methods in all game_objects that have them in the
-    active_scene.
-
-    :return: None
-    :rtype: None
-    """
-    for game_object in scenes.active_scene.game_obejcts:
-            game_object.broadcast_message(method_name="scene_unloaded")
