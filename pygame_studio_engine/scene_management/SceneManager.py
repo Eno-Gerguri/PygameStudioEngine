@@ -66,7 +66,7 @@ def load_scene_by_name(scene_name: str) -> Optional[Scene]:
     """
     for scene in scenes:
         if scene.name == scene_name:
-            scene.is_active = True
+            scenes.active_scene = scene
             return scene
 
 
@@ -80,8 +80,8 @@ def load_scene_by_build_index(build_index: int) -> Optional[Scene]:
     :rtype: Scene or None
     """
     try:
-        scenes[build_index].is_active = True
-        return Scene
+        scenes.active_scene = scenes[build_index]
+        return scenes[build_index]
     except IndexError:
         return None
 

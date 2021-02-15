@@ -1,4 +1,4 @@
-from pygame_studio_engine.scene_management..scene import Scene
+from pygame_studio_engine.scene_management.scene import Scene
 
 
 class SceneList(list):
@@ -69,38 +69,64 @@ class SceneList(list):
         for scene in self[value.build_index:]:
             scene.build_index -= 1
 
-    def active_scene_changed(self) -> None:
+    def active_scene_changed(
+            self,
+            old_active_scene: Scene,
+            new_active_scene: Scene
+    ) -> None:
         """
         Calls all active_scene_changed methods in all game_objects that have
         them in the active_scene.
 
+        :param old_active_scene: The old active scene, that is no longer active
+        :type old_active_scene: Scene
+        :param new_active_scene: The new active scene, that is currently active
+        :type new_active_scene: Scene
         :return: None
         :rtype: None
         """
-        for game_object in self.active_scene.game_obejcts:
-            game_object.broadcast_message(method_name="active_scene_changed")
+        for game_object in self.active_scene.game_objects:
+            if game_object.is_active:
+                game_object.broadcast_message(
+                        method_name="active_scene_changed",
+                        old_active_scene=old_active_scene,
+                        new_active_scene=new_active_scene
+                )
 
-    def scene_loaded(self) -> None:
+    def scene_loaded(self, scene_loaded: Scene) -> None:
         """
-        Calls all scene_loaded methods in all game_obejcts that have them in
+        Calls all scene_loaded methods in all game_objects that have them in
         the active_scene.
 
+        :param scene_loaded: The scene that was loaded to be the active scene
+        :type scene_loaded: Scene
         :return: None
         :rtype: None
         """
-        for game_object in self.active_scene.game_obejcts:
-            game_object.broadcast_message(method_name="scene_loaded")
+        for game_object in self.active_scene.game_objects:
+            if game_object.is_active:
+                game_object.broadcast_message(
+                        method_name="scene_loaded",
+                        scene_loaded=scene_loaded
+                )
 
-    def scene_unloaded(self) -> None:
+    def scene_unloaded(self, scene_unloaded: Scene) -> None:
         """
         Calls all scene_unloaded methods in all game_objects that have them
         in the active_scene.
 
+        :param scene_unloaded: The scene that was unloaded to no longer be the
+                               active scene
+        :type scene_unloaded: Scene
         :return: None
         :rtype: None
         """
-        for game_object in self.active_scene.game_obejcts:
-            game_object.broadcast_message(method_name="scene_unloaded")
+        for game_object in scene_unloaded.game_objects:
+            if game_object.is_active:
+                game_object.broadcast_message(
+                        method_name="scene_unloaded",
+                        scene_unloaded=scene_unloaded
+                )
 
     @property
     def active_scene(self) -> Scene:
@@ -117,13 +143,23 @@ class SceneList(list):
     def active_scene(self, value):
         assert isinstance(value, Scene)
 
-        def set_active_scene():
+        def set_active_scene() -> None:
+            """
+            Sets the correct active scene and calls the correct scene events.
+
+            :return: None
+            :rtype: None
+            """
+            scene_being_unloaded = self._active_scene
             self._active_scene.is_active = False
-            self.scene_unloaded()
             value.is_active = True
-            self.scene_loaded()
             self._active_scene = value
-            self.active_scene_changed()
+            self.scene_unloaded(scene_unloaded=scene_being_unloaded)
+            self.scene_loaded(scene_loaded=self._active_scene)
+            self.active_scene_changed(
+                    old_active_scene=scene_being_unloaded,
+                    new_active_scene=self._active_scene
+            )
 
         if value in self:
             set_active_scene()

@@ -1,4 +1,5 @@
 from pygame_studio_engine.scene_management import SceneManager
+from pygame_studio_engine.game_object import GameObject
 from pygame_studio_engine.utils import get_first_available_name
 
 
@@ -25,3 +26,13 @@ class Scene:
                 names=(scene.name for scene in SceneManager.scenes)
         )
         self.game_objects: list[GameObject] = []
+
+    def __repr__(self):
+        return (
+            f"<pygame_studio_engine.scene_management.scene.Scene("
+            f"build_index: {self.build_index}, "
+            f"is_active: {self.is_active}, "
+            f"name: {self.name}, "
+            f"game_objects: {self.game_objects}"
+            f")>"
+        )
